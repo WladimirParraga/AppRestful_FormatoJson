@@ -38,11 +38,29 @@ public class turisticos extends AppCompatActivity implements Asynchtask{
 
     @Override
     public void processFinish(String result) throws JSONException {
-        Log.d("API_RESPONSE", result);  // Imprime la respuesta en la consola
+        Log.d("API_RESPONSE", result);  //
 
-        TextView txtBancos = findViewById(R.id.txtbanco);
+        TextView txtLugares = findViewById(R.id.textlugar);
+        JSONObject jsonResponse = new JSONObject(result);
+        JSONArray lugaresArray = jsonResponse.getJSONArray("data");
 
-        // Muestra el resultado JSON completo en el TextView
-        txtBancos.setText("Respuesta WS: " + result);
+        StringBuilder lugaresInfo = new StringBuilder();
+
+        for (int i = 0; i < lugaresArray.length(); i++) {
+            JSONObject lugar = lugaresArray.getJSONObject(i);
+
+            if (lugar.has("categoria") && lugar.has("nombre_lugar") && lugar.has("telefono") &&
+                    !lugar.isNull("categoria") && !lugar.isNull("nombre_lugar") && !lugar.isNull("telefono")) {
+                String categoria = lugar.getString("categoria");
+                String nombreLugar = lugar.getString("nombre_lugar");
+                String telefono = lugar.getString("telefono");
+
+                lugaresInfo.append("Categoría: ").append(categoria).append("\n");
+                lugaresInfo.append("Nombre del lugar: ").append(nombreLugar).append("\n");
+                lugaresInfo.append("Teléfono: ").append(telefono).append("\n\n");
+            }
+        }
+
+        txtLugares.setText(lugaresInfo.toString());
     }
 }
